@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Flask Test</title>
+  <style type="text/css">
+    #body{
+      background-color: aliceblue;
+      font-family: Roboto, sans-serif;
+    }
+    #container{
+      display: flex;
+      margin: 10% 15% 0% 15%;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    h3{
+        margin:0;
+        padding:0;
+
+    }
+    img{
+        margin-top: 5%;
+        width: 20%;
+    }
+  </style>
+</head>
+<body id="body">
+    <div id="container">
+        <h1>The power is in your hands!</h1>
+        <h3>
+            Place the ball in one of the glowing ballholders
+             <br> 
+            to choose a topic
+        </h3>
+        <img src="{{ url_for('static', filename='images/Place_Ball_Down.png') }}">
+
+    </div>
+  <div>
+    {% block content %}{% endblock %}
+  </div>
+
+
+</body>
+</html>

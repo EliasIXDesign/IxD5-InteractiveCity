@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Flask Test</title>
+  <style type="text/css">
+    #body{
+      background-color: aliceblue;
+      font-family: Roboto, sans-serif;
+    }
+    #container{
+      display: flex;
+      margin: 10% 15% 0% 15%;
+      flex-direction: column;
+      align-items: center;
+
+    }
+    #question{
+      margin: 3% 10% 0 10%;
+      text-align: center;
+    }
+
+    #guide{
+      font-weight: bolder;
+      margin-top: 2%;
+      text-align: center;
+    }
+    #selecOP{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+      border-radius: 10px;
+      width: 80%;
+      height: 150px;
+      margin-top: 5%;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; 
+      font-size: 2em;
+      font-weight: bolder;
+    }
+
+    #selecOP p{
+      text-align: center;
+      margin: 0;
+      padding: 0%;
+    }
+
+    #input{
+      display: flex;
+      text-align: center;
+      justify-content: center;
+      align-content: center;
+    }
+
+    #sliderimg{
+      margin-top: 5%;
+      height: 100px;
+      opacity: 80%;
+
+    }
+
+
+  </style>
+    {{ turbo() }}
+</head>
+<body id="body">
+    <div id="container">
+        <h1 id="">{{ region }}</h1>
+        <h3 id="question">
+            {{ question }}
+        </h3>
+        <div id="selecOP">
+          <div id="text">
+            <p>I think it is: </p>
+            <div id="input">{% include "selectedoption.html" %}</div>
+            <p> {{ value }}}</p>
+          </div>
+
+      </div>
+        <img id="sliderimg" src="{{ url_for('static', filename='images/Slider.png') }}">
+      </div>
+
+
+    </div>
+  <div>
+    {% block content %}{% endblock %}
+  </div>
+
+
+</body>
+</html>
