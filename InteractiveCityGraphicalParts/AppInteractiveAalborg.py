@@ -278,8 +278,7 @@ def awaitingBall():
 @app.route("/question/")
 def question():
 	
-    global  selectedAnswer, answer, state, oplist, listBaseOne, listBaseTwo, 
-    questionloop, revealtext, region, lastTouchIndex, question, value, selecOp
+    global  selectedAnswer, answer, state, oplist, listBaseOne, listBaseTwo, questionloop, revealtext, region, lastTouchIndex, question, value, selecOp
     
     
     ## Depending on state, select questions from base1 or base2 
@@ -346,8 +345,7 @@ def question():
 @app.route("/reveal/")
 def reveal():
     
-    global question, selectedAnswer, answer, state, revealtext, listBaseOne,
-     listBaseTwo, questionloop, difference, value, lastTouchIndex
+    global question, selectedAnswer, answer, state, revealtext, listBaseOne, listBaseTwo, questionloop, difference, value, lastTouchIndex
 
     
     selectedAnswer = lastTouchIndex
