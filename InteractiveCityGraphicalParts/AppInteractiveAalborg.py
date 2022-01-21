@@ -13,6 +13,7 @@ from rpi_ws281x import * #LED library from adafruit
 import argparse #write to the LED strip
 #####PAGE REFRESH########
 import pyautogui #to simulate page refresh by pressing F5
+from selenium import webdriver
 #####QR CODE#########
 import qrcode #Creates a qr code from a link
 from PIL import Image #used to save qr code as image  
@@ -62,11 +63,6 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
 strip.begin()
 
-##======================COM WITH ARDUINO==================================##
-
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-ser.reset_input_buffer()
-
 ##===================LED Functions=========================================##
 def colorWipe(strip, color, pos):
     """Wipe color across display a pixel at a time."""
@@ -81,8 +77,17 @@ def colorWipeAll(strip, pos):
         strip.show()
 
 
-##============================FLASK==================================##
 
+##======================COM WITH ARDUINO==================================##
+
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+ser.reset_input_buffer()
+
+##======================SELENIUM==========================================##
+
+driver = webdriver.Chrome()
+#executable_path = '/usr/lib/chromium-browser/chromedriver'
+##============================FLASK==================================##
 
 app = Flask(__name__)
 turbo = Turbo(app)
@@ -202,7 +207,10 @@ def activate_job():
                     ardustate = ser.readline().decode('utf-8').rstrip() 
                     state = ardustate #updates the global stae
                     print(state) #prints state to console for debugging 
-                    pyautogui.hotkey('f5') #refreshes page by pressing F5
+                    #pyautogui.hotkey('f5') #refreshes page by pressing F5
+                    driver.refresh()
+                    #chromium-browser.refresh()
+                    #browser.refresh()
 
 
     # Starts the threads
@@ -277,7 +285,7 @@ def awaitingBall():
 
 @app.route("/question/")
 def question():
-	
+    
     global  selectedAnswer, answer, state, oplist, listBaseOne, listBaseTwo, questionloop, revealtext, region, lastTouchIndex, question, value, selecOp
     
     
@@ -408,8 +416,7 @@ def reveal():
 
     ##NAVIGATION
     if state == "reveal" :
-        return render_template("reveal.html", img_data=encoded_img_data.decode('utf-8'), revealtext = revealtext, selectedAnswer = selectedAnswer,
-         lessmore = lessmore, answer = answer, difference = difference, value = value)
+        return render_template("reveal.html", img_data=encoded_img_data.decode('utf-8'), revealtext = revealtext, selectedAnswer = selectedAnswer, lessmore = lessmore, answer = answer, difference = difference, value = value)
             
 
     elif state == "base1" :
@@ -426,8 +433,7 @@ def reveal():
 
     else: 
         return render_template("reveal.html", img_data=encoded_img_data.decode('utf-8'), 
-         revealtext = revealtext, selectedAnswer = selectedAnswer,
-         lessmore = lessmore, answer = answer, difference = difference, value = value)
+         revealtext = revealtext, selectedAnswer = selectedAnswer, lessmore = lessmore, answer = answer, difference = difference, value = value)
 
 
 
@@ -441,6 +447,6 @@ def reveal():
 
 if __name__ == "__main__":
 
-	app.run()
-
+    app.run()
+    driver.get("http://127.0.0.1:5000/awaitingPickup")
 
