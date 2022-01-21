@@ -86,7 +86,7 @@ ser.reset_input_buffer()
 ##======================SELENIUM==========================================##
 
 driver = webdriver.Chrome()
-#executable_path = '/usr/lib/chromium-browser/chromedriver'
+#"executable_path = '/usr/lib/chromedriver"
 ##============================FLASK==================================##
 
 app = Flask(__name__)
@@ -207,10 +207,22 @@ def activate_job():
                     ardustate = ser.readline().decode('utf-8').rstrip() 
                     state = ardustate #updates the global stae
                     print(state) #prints state to console for debugging 
-                    #pyautogui.hotkey('f5') #refreshes page by pressing F5
-                    driver.refresh()
-                    #chromium-browser.refresh()
-                    #browser.refresh()
+
+                    if state == "awaitingPickup":
+                        driver.get("http://127.0.0.1:5000/awaitingPickup")
+
+                    elif state == "awaitingBall":
+                        driver.get("http://127.0.0.1:5000/awaitingBall")
+
+                    elif state == "base1":
+                        driver.get("http://127.0.0.1:5000/question")
+
+                    elif state == "base2":
+                        driver.get("http://127.0.0.1:5000/question")
+
+                    elif state == "reveal":
+                        driver.get("http://127.0.0.1:5000/reveal")
+
 
 
     # Starts the threads
@@ -231,55 +243,20 @@ def inject_load():
 @app.route("/awaitingPickup/") #pick up ball
 def awaitingPickup():
 
-    global state, lastTouchIndex
-
-    colorWipeAll(strip, 0) #Wipes all led for reset 
-    lastTouchIndex = "0"
-
-    if state == "base1" :
-        return redirect(url_for("question"))
-
-    elif state == "base2" :
-        return redirect(url_for("question"))
-
-    elif state == "awaitingBall" : 
-        return redirect(url_for("awaitingBall"))
-
-    elif state == "reveal" :
-        return redirect(url_for("reveal"))
-
-    elif state == "awaitingPickup" :
-        return render_template("default.html")
-
-    else: 
-        return render_template("default.html")
+    return render_template("default.html")
    
 
 @app.route("/awaitingBall/") #pick up ball
 def awaitingBall():
 
-    global state
+    global lastTouchIndex
 
     colorWipeAll(strip, 0) #Wipes all led for reset 
     lastTouchIndex = "0"
 
-    if state == "base1" :
-        return redirect(url_for("question"))
 
-    elif state == "base2" :
-        return redirect(url_for("question"))
+    return render_template("awaitingBall.html")
 
-    elif state == "awaitingBall" : 
-        return render_template("awaitingBall.html")
-
-    elif state == "reveal" :
-        return redirect(url_for("reveal"))
-
-    elif state == "awaitingPickup" :
-        return redirect(url_for("awaitingPickup"))
-
-    else: 
-        return render_template("default.html")
 
 ##=========================QUESTION PAGE=============================##
 
@@ -324,27 +301,8 @@ def question():
 
 
 
-    
+    return render_template("question.html", question = question, options = oplist, region = region, value = value)
 
-
-    ##NAVIGATION
-    if state == "base1" :
-        return render_template("question.html", question = question, options = oplist, region = region, value = value)
-
-    elif state == "base2" :
-        return render_template("question.html", question = question, options = oplist, region = region, value = value)
-
-    elif state == "awaitingPickup" : 
-        return redirect(url_for("awaitingPickup"))
-
-    elif state == "reveal" :
-        return redirect(url_for("reveal"))
-
-    elif state == "awaitingBall" : 
-        return redirect(url_for("awaitingBall"))
-
-    else: 
-        return render_template("question.html", question = question, options = oplist, region = region, value = value)
 
 
 
@@ -353,7 +311,7 @@ def question():
 @app.route("/reveal/")
 def reveal():
     
-    global question, selectedAnswer, answer, state, revealtext, listBaseOne, listBaseTwo, questionloop, difference, value, lastTouchIndex
+    global question, selectedAnswer, answer, revealtext, listBaseOne, listBaseTwo, questionloop, difference, value, lastTouchIndex
 
     
     selectedAnswer = lastTouchIndex
@@ -380,9 +338,6 @@ def reveal():
     ##Need to use one % more at each %20 in order to escape the first %s
     ##So coloring is fucked up
     qrlink = "https://www.aalborg.dk/51934?view=cm&68c963d3-3785-410b-bf46-294cd436ff8c=%s%%20,%%20which%%20is%%20%s%%20%s%%20%s%%20than%%20the%%20%s%%20%s%%20you%%20have%%20chosen.&fs=1.aspx" % (encodedRevealText, difference, value, lessmore, selectedAnswer, value)
-
-
-
 
 
 
@@ -414,26 +369,8 @@ def reveal():
 
 
 
-    ##NAVIGATION
-    if state == "reveal" :
-        return render_template("reveal.html", img_data=encoded_img_data.decode('utf-8'), revealtext = revealtext, selectedAnswer = selectedAnswer, lessmore = lessmore, answer = answer, difference = difference, value = value)
+    return render_template("reveal.html", img_data=encoded_img_data.decode('utf-8'), revealtext = revealtext, selectedAnswer = selectedAnswer, lessmore = lessmore, answer = answer, difference = difference, value = value)
             
-
-    elif state == "base1" :
-        return redirect(url_for("question"))
-
-    elif state == "base2" : 
-        return redirect(url_for("question"))
-
-    elif state == "awaitingPickup" : 
-        return redirect(url_for("awaitingPickup"))
-
-    elif state == "awaitingBall" : 
-        return redirect(url_for("awaitingBall"))
-
-    else: 
-        return render_template("reveal.html", img_data=encoded_img_data.decode('utf-8'), 
-         revealtext = revealtext, selectedAnswer = selectedAnswer, lessmore = lessmore, answer = answer, difference = difference, value = value)
 
 
 
